@@ -1,9 +1,12 @@
 "use client";
+
+import { useState } from "react";
+
 const products = {
   "elegant-ring": {
     name: "Elegant Ring",
     category: "Jewelry",
-    price: "$45",
+    price: 45,
     icon: "💍",
     description:
       "A beautiful jewelry piece for everyday wear and special occasions.",
@@ -12,7 +15,7 @@ const products = {
   "flower-bouquet": {
     name: "Fresh Flower Bouquet",
     category: "Flowers",
-    price: "$35",
+    price: 35,
     icon: "🌸",
     description:
       "A carefully arranged flower bouquet designed for meaningful moments.",
@@ -21,7 +24,7 @@ const products = {
   "birthday-card": {
     name: "Birthday Celebration Card",
     category: "Birthday",
-    price: "$12",
+    price: 12,
     icon: "🎂",
     description:
       "A thoughtful birthday card for celebrating someone special.",
@@ -30,7 +33,7 @@ const products = {
   "surprise-card": {
     name: "Surprise Gift Card",
     category: "Surprise Gifts",
-    price: "$18",
+    price: 18,
     icon: "💌",
     description:
       "A special gift card designed to make someone's day memorable.",
@@ -39,7 +42,7 @@ const products = {
   "special-pizza": {
     name: "Special Occasion Pizza",
     category: "Food",
-    price: "$22",
+    price: 22,
     icon: "🍕",
     description:
       "A delicious pizza option for celebrations and special occasions.",
@@ -48,7 +51,7 @@ const products = {
   "fashion-collection": {
     name: "Classic Fashion Collection",
     category: "Fashion",
-    price: "$65",
+    price: 65,
     icon: "👗",
     description:
       "A stylish fashion collection designed for everyday confidence.",
@@ -57,7 +60,7 @@ const products = {
   "smart-device": {
     name: "Wireless Smart Device",
     category: "Electronics",
-    price: "$89",
+    price: 89,
     icon: "📱",
     description:
       "A modern wireless device for everyday technology needs.",
@@ -66,7 +69,7 @@ const products = {
   "home-collection": {
     name: "Modern Home Collection",
     category: "Home & Living",
-    price: "$54",
+    price: 54,
     icon: "🏠",
     description:
       "Modern home essentials designed to complement your space.",
@@ -75,6 +78,7 @@ const products = {
 
 export default function ProductPage({ params }) {
   const product = products[params.id];
+  const [added, setAdded] = useState(false);
 
   if (!product) {
     return (
@@ -85,6 +89,41 @@ export default function ProductPage({ params }) {
     );
   }
 
+  function addToCart() {
+    const existingCart = JSON.parse(
+      localStorage.getItem("nexora-cart") || "[]"
+    );
+
+    const existingProduct = existingCart.find(
+      (item) => item.id === params.id
+    );
+
+    let updatedCart;
+
+    if (existingProduct) {
+      updatedCart = existingCart.map((item) =>
+        item.id === params.id
+          ? { ...item, quantity: item.quantity + 1 }
+          : item
+      );
+    } else {
+      updatedCart = [
+        ...existingCart,
+        {
+          id: params.id,
+          name: product.name,
+          category: product.category,
+          price: product.price,
+          icon: product.icon,
+          quantity: 1,
+        },
+      ];
+    }
+
+    localStorage.setItem("nexora-cart", JSON.stringify(updatedCart));
+    setAdded(true);
+  }
+
   return (
     <main className="productPage">
       <nav className="nav">
@@ -92,9 +131,10 @@ export default function ProductPage({ params }) {
           NEXORA
         </a>
 
-        <a href="/marketplace" className="secondary">
-          ← Back to Marketplace
-        </a>
+        <div className="navLinks">
+          <a href="/marketplace">Marketplace</a>
+          <a href="/cart">Cart 🛒</a>
+        </div>
       </nav>
 
       <section className="productDetail">
@@ -107,14 +147,27 @@ export default function ProductPage({ params }) {
 
           <h1>{product.name}</h1>
 
-          <p className="detailPrice">{product.price}</p>
+          <p className="detailPrice">${product.price}</p>
 
-          <p className="detailDescription">{product.description}</p>
+          <p className="detailDescription">
+            {product.description}
+          </p>
 
           <div className="purchaseBox">
-            <button className="primary">Add to Cart</button>
-            <button className="secondary">Buy Now</button>
+            <button className="primary" onClick={addToCart}>
+              {added ? "✓ Added to Cart" : "Add to Cart"}
+            </button>
+
+            <a href="/cart" className="secondary">
+              View Cart
+            </a>
           </div>
+
+          {added && (
+            <div className="cartNotice">
+              Product added successfully.
+            </div>
+          )}
 
           <div className="productTrust">
             <p>✓ Secure checkout</p>
