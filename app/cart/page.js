@@ -1,4 +1,45 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 export default function CartPage() {
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const savedCart = JSON.parse(
+      localStorage.getItem("nexora-cart") || "[]"
+    );
+
+    setCart(savedCart);
+  }, []);
+
+  function removeItem(id) {
+    const updatedCart = cart.filter((item) => item.id !== id);
+
+    setCart(updatedCart);
+    localStorage.setItem("nexora-cart", JSON.stringify(updatedCart));
+  }
+
+  function updateQuantity(id, change) {
+    const updatedCart = cart
+      .map((item) => {
+        if (item.id !== id) return item;
+
+        return {
+          ...item,
+          quantity: Math.max(1, item.quantity + change),
+        };
+      });
+
+    setCart(updatedCart);
+    localStorage.setItem("nexora-cart", JSON.stringify(updatedCart));
+  }
+
+  const subtotal = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
   return (
     <main className="cartPage">
       <nav className="nav">
@@ -12,21 +53,72 @@ export default function CartPage() {
       </nav>
 
       <section className="cartContainer">
-        <div>
+        <div className="cartItems">
           <p className="eyebrow">YOUR SHOPPING CART</p>
           <h1>Your Cart</h1>
 
-          <div className="emptyCart">
-            <div className="cartIcon">🛒</div>
-            <h2>Your cart is ready</h2>
-            <p>
-              Products you add to your cart will appear here.
-            </p>
+          {cart.length === 0 ? (
+            <div className="emptyCart">
+              <div className="cartIcon">🛒</div>
+              <h2>Your cart is empty</h2>
+              <p>
+                Discover something you love and add it to your cart.
+              </p>
 
-            <a href="/marketplace" className="primary">
-              Explore Marketplace
-            </a>
-          </div>
+              <a href="/marketplace" className="primary">
+                Explore Marketplace
+              </a>
+            </div>
+          ) : (
+            <div className="cartList">
+              {cart.map((item) => (
+                <div className="cartItem" key={item.id}>
+                  <div className="cartProductImage">
+                    {item.icon}
+                  </div>
+
+                  <div className="cartProductInfo">
+                    <p className="productCategory">
+                      {item.category}
+                    </p>
+
+                    <h2>{item.name}</h2>
+
+                    <strong>${item.price}</strong>
+
+                    <div className="quantityControls">
+                      <button
+                        onClick={() => updateQuantity(item.id, -1)}
+                      >
+                        −
+                      </button>
+
+                      <span>{item.quantity}</span>
+
+                      <button
+                        onClick={() => updateQuantity(item.id, 1)}
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="cartItemRight">
+                    <strong>
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </strong>
+
+                    <button
+                      className="removeButton"
+                      onClick={() => removeItem(item.id)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         <aside className="cartSummary">
@@ -34,7 +126,7 @@ export default function CartPage() {
 
           <div className="summaryRow">
             <span>Subtotal</span>
-            <strong>$0.00</strong>
+            <strong>${subtotal.toFixed(2)}</strong>
           </div>
 
           <div className="summaryRow">
@@ -44,10 +136,13 @@ export default function CartPage() {
 
           <div className="summaryTotal">
             <span>Total</span>
-            <strong>$0.00</strong>
+            <strong>${subtotal.toFixed(2)}</strong>
           </div>
 
-          <button className="checkoutButton" disabled>
+          <button
+            className="checkoutButton"
+            disabled={cart.length === 0}
+          >
             Proceed to Checkout
           </button>
         </aside>
