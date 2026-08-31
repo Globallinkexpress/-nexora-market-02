@@ -1,0 +1,200 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+export default function CheckoutPage() {
+  const [cart, setCart] = useState([]);
+
+  useEffect(() => {
+    const savedCart = JSON.parse(localStorage.getItem("nexora-cart") || "[]");
+
+    const normalizedCart = savedCart.map((item) => ({
+      ...item,
+      price: Number(String(item.price).replace(/[^0-9.]/g, "")) || 0,
+      quantity: Number(item.quantity) || 1,
+    }));
+
+    setCart(normalizedCart);
+  }, []);
+
+  const subtotal = cart.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+
+  const delivery = subtotal > 0 ? 5 : 0;
+  const total = subtotal + delivery;
+
+  function placeOrder(event) {
+    event.preventDefault();
+
+    if (cart.length === 0) return;
+
+    alert("Order received successfully! We will contact you with delivery details.");
+  }
+
+  return (
+    <main className="checkoutPage">
+      <nav className="nav">
+        <a href="/" className="logo">
+          NEXORA
+        </a>
+
+        <a href="/cart" className="secondary">
+          ← Back to Cart
+        </a>
+      </nav>
+
+      <section className="checkoutContainer">
+        <div className="checkoutForm">
+          <p className="eyebrow">SECURE CHECKOUT</p>
+
+          <h1>Complete your order</h1>
+
+          <p className="checkoutSubtitle">
+            Enter your delivery information to continue.
+          </p>
+
+          {cart.length === 0 ? (
+            <div className="emptyCheckout">
+              <h2>Your cart is empty</h2>
+              <p>Add a product before checking out.</p>
+
+              <a href="/marketplace" className="primary">
+                Explore Marketplace
+              </a>
+            </div>
+          ) : (
+            <form onSubmit={placeOrder} className="checkoutFields">
+              <div className="fieldGroup">
+                <label>Full name</label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+
+              <div className="fieldGroup">
+                <label>Email address</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
+
+              <div className="fieldGroup">
+                <label>Phone number</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  placeholder="Enter your phone number"
+                  required
+                />
+              </div>
+
+              <div className="fieldGroup">
+                <label>Delivery address</label>
+                <input
+                  type="text"
+                  name="address"
+                  placeholder="Street address"
+                  required
+                />
+              </div>
+
+              <div className="twoFields">
+                <div className="fieldGroup">
+                  <label>City</label>
+                  <input
+                    type="text"
+                    name="city"
+                    placeholder="City"
+                    required
+                  />
+                </div>
+
+                <div className="fieldGroup">
+                  <label>Country</label>
+                  <input
+                    type="text"
+                    name="country"
+                    placeholder="Country"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="fieldGroup">
+                <label>Payment method</label>
+
+                <select name="payment" required defaultValue="">
+                  <option value="" disabled>
+                    Select payment method
+                  </option>
+                  <option value="card">Card payment</option>
+                  <option value="cash">Pay on delivery</option>
+                </select>
+              </div>
+
+              <button type="submit" className="primary checkoutSubmit">
+                Place Order
+              </button>
+            </form>
+          )}
+        </div>
+
+        <aside className="checkoutSummary">
+          <p className="eyebrow">ORDER SUMMARY</p>
+
+          <h2>Your Order</h2>
+
+          {cart.length === 0 ? (
+            <p className="summaryEmpty">No products in your cart.</p>
+          ) : (
+            <>
+              <div className="checkoutItems">
+                {cart.map((item) => (
+                  <div className="checkoutItem" key={item.id}>
+                    <div className="checkoutItemIcon">
+                      {item.icon}
+                    </div>
+
+                    <div>
+                      <strong>{item.name}</strong>
+                      <p>
+                        {item.quantity} × ${item.price.toFixed(2)}
+                      </p>
+                    </div>
+
+                    <strong>
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </strong>
+                  </div>
+                ))}
+              </div>
+
+              <div className="summaryRow">
+                <span>Subtotal</span>
+                <strong>${subtotal.toFixed(2)}</strong>
+              </div>
+
+              <div className="summaryRow">
+                <span>Delivery</span>
+                <strong>${delivery.toFixed(2)}</strong>
+              </div>
+
+              <div className="summaryTotal">
+                <span>Total</span>
+                <strong>${total.toFixed(2)}</strong>
+              </div>
+            </>
+          )}
+        </aside>
+      </section>
+    </main>
+  );
+}
