@@ -1,3 +1,5 @@
+import "./globals.css";
+
 export const metadata = {
   title: "Nexora Market",
   description: "Your global marketplace",
