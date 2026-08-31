@@ -1,3 +1,4 @@
+"use client";
 const products = {
   "elegant-ring": {
     name: "Elegant Ring",
