@@ -4,13 +4,18 @@ import { useEffect, useState } from "react";
 
 export default function CheckoutPage() {
   const [cart, setCart] = useState([]);
+  const [orderPlaced, setOrderPlaced] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
 
   useEffect(() => {
-    const savedCart = JSON.parse(localStorage.getItem("nexora-cart") || "[]");
+    const savedCart = JSON.parse(
+      localStorage.getItem("nexora-cart") || "[]"
+    );
 
     const normalizedCart = savedCart.map((item) => ({
       ...item,
-      price: Number(String(item.price).replace(/[^0-9.]/g, "")) || 0,
+      price:
+        Number(String(item.price).replace(/[^0-9.]/g, "")) || 0,
       quantity: Number(item.quantity) || 1,
     }));
 
@@ -18,7 +23,8 @@ export default function CheckoutPage() {
   }, []);
 
   const subtotal = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) =>
+      total + item.price * item.quantity,
     0
   );
 
@@ -28,46 +34,166 @@ export default function CheckoutPage() {
   function placeOrder(event) {
     event.preventDefault();
 
-    if (cart.length === 0) return;
+    if (!paymentMethod) {
+      alert("Please select a payment method.");
+      return;
+    }
 
-    alert("Order received successfully! We will contact you with delivery details.");
+    setOrderPlaced(true);
+  }
+
+  if (orderPlaced) {
+    return (
+      <main className="checkoutPage">
+        <nav className="nav">
+          <a href="/" className="logo">
+            NEXORA
+          </a>
+        </nav>
+
+        <section className="successContainer">
+          <div className="successCard">
+            <div className="successIcon">✓</div>
+
+            <p className="eyebrow">
+              ORDER CONFIRMED
+            </p>
+
+            <h1>
+              Order placed successfully!
+            </h1>
+
+            <p>
+              Thank you for shopping with Nexora.
+              Your order has been received.
+            </p>
+
+            {paymentMethod === "transfer" && (
+              <div className="transferDetails">
+                <h2>Bank Transfer Details</h2>
+
+                <p>
+                  Please transfer the exact order
+                  amount using the details below.
+                </p>
+
+                <div className="bankBox">
+                  <p>
+                    <strong>Bank:</strong> Nexora Bank
+                  </p>
+
+                  <p>
+                    <strong>Account Name:</strong>{" "}
+                    Nexora Market
+                  </p>
+
+                  <p>
+                    <strong>Account Number:</strong>{" "}
+                    1234567890
+                  </p>
+
+                  <p>
+                    <strong>Amount:</strong>{" "}
+                    ${total.toFixed(2)}
+                  </p>
+                </div>
+
+                <p className="transferNote">
+                  After making the transfer, keep your
+                  payment receipt for order confirmation.
+                </p>
+              </div>
+            )}
+
+            {paymentMethod === "cash" && (
+              <div className="paymentNotice">
+                <h2>Pay on Delivery</h2>
+
+                <p>
+                  You will pay when your order is
+                  delivered.
+                </p>
+              </div>
+            )}
+
+            <a
+              href="/marketplace"
+              className="primary"
+            >
+              Continue Shopping
+            </a>
+          </div>
+        </section>
+      </main>
+    );
   }
 
   return (
     <main className="checkoutPage">
+
       <nav className="nav">
         <a href="/" className="logo">
           NEXORA
         </a>
 
-        <a href="/cart" className="secondary">
+        <a
+          href="/cart"
+          className="secondary"
+        >
           ← Back to Cart
         </a>
       </nav>
 
       <section className="checkoutContainer">
-        <div className="checkoutForm">
-          <p className="eyebrow">SECURE CHECKOUT</p>
 
-          <h1>Complete your order</h1>
+        <div className="checkoutForm">
+
+          <p className="eyebrow">
+            SECURE CHECKOUT
+          </p>
+
+          <h1>
+            Complete your order
+          </h1>
 
           <p className="checkoutSubtitle">
-            Enter your delivery information to continue.
+            Enter your delivery information
+            and choose your payment method.
           </p>
 
           {cart.length === 0 ? (
-            <div className="emptyCheckout">
-              <h2>Your cart is empty</h2>
-              <p>Add a product before checking out.</p>
 
-              <a href="/marketplace" className="primary">
+            <div className="emptyCheckout">
+
+              <h2>
+                Your cart is empty
+              </h2>
+
+              <p>
+                Add a product before checking out.
+              </p>
+
+              <a
+                href="/marketplace"
+                className="primary"
+              >
                 Explore Marketplace
               </a>
+
             </div>
+
           ) : (
-            <form onSubmit={placeOrder} className="checkoutFields">
+
+            <form
+              onSubmit={placeOrder}
+              className="checkoutFields"
+            >
+
               <div className="fieldGroup">
-                <label>Full name</label>
+                <label>
+                  Full name
+                </label>
+
                 <input
                   type="text"
                   name="name"
@@ -77,7 +203,10 @@ export default function CheckoutPage() {
               </div>
 
               <div className="fieldGroup">
-                <label>Email address</label>
+                <label>
+                  Email address
+                </label>
+
                 <input
                   type="email"
                   name="email"
@@ -87,7 +216,10 @@ export default function CheckoutPage() {
               </div>
 
               <div className="fieldGroup">
-                <label>Phone number</label>
+                <label>
+                  Phone number
+                </label>
+
                 <input
                   type="tel"
                   name="phone"
@@ -97,7 +229,10 @@ export default function CheckoutPage() {
               </div>
 
               <div className="fieldGroup">
-                <label>Delivery address</label>
+                <label>
+                  Delivery address
+                </label>
+
                 <input
                   type="text"
                   name="address"
@@ -107,8 +242,12 @@ export default function CheckoutPage() {
               </div>
 
               <div className="twoFields">
+
                 <div className="fieldGroup">
-                  <label>City</label>
+                  <label>
+                    City
+                  </label>
+
                   <input
                     type="text"
                     name="city"
@@ -118,7 +257,10 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="fieldGroup">
-                  <label>Country</label>
+                  <label>
+                    Country
+                  </label>
+
                   <input
                     type="text"
                     name="country"
@@ -126,75 +268,153 @@ export default function CheckoutPage() {
                     required
                   />
                 </div>
+
               </div>
 
               <div className="fieldGroup">
-                <label>Payment method</label>
 
-                <select name="payment" required defaultValue="">
-                  <option value="" disabled>
+                <label>
+                  Payment method
+                </label>
+
+                <select
+                  name="payment"
+                  value={paymentMethod}
+                  onChange={(event) =>
+                    setPaymentMethod(
+                      event.target.value
+                    )
+                  }
+                  required
+                >
+                  <option value="">
                     Select payment method
                   </option>
-                  <option value="card">Card payment</option>
-                  <option value="cash">Pay on delivery</option>
+
+                  <option value="card">
+                    Card Payment
+                  </option>
+
+                  <option value="transfer">
+                    Pay by Bank Transfer
+                  </option>
+
+                  <option value="cash">
+                    Pay on Delivery
+                  </option>
                 </select>
+
               </div>
 
-              <button type="submit" className="primary checkoutSubmit">
+              <button
+                type="submit"
+                className="primary checkoutSubmit"
+              >
                 Place Order
               </button>
+
             </form>
+
           )}
+
         </div>
 
         <aside className="checkoutSummary">
-          <p className="eyebrow">ORDER SUMMARY</p>
 
-          <h2>Your Order</h2>
+          <p className="eyebrow">
+            ORDER SUMMARY
+          </p>
+
+          <h2>
+            Your Order
+          </h2>
 
           {cart.length === 0 ? (
-            <p className="summaryEmpty">No products in your cart.</p>
+
+            <p className="summaryEmpty">
+              No products in your cart.
+            </p>
+
           ) : (
+
             <>
+
               <div className="checkoutItems">
+
                 {cart.map((item) => (
-                  <div className="checkoutItem" key={item.id}>
+
+                  <div
+                    className="checkoutItem"
+                    key={item.id}
+                  >
+
                     <div className="checkoutItemIcon">
                       {item.icon}
                     </div>
 
                     <div>
-                      <strong>{item.name}</strong>
+                      <strong>
+                        {item.name}
+                      </strong>
+
                       <p>
-                        {item.quantity} × ${item.price.toFixed(2)}
+                        {item.quantity} × $
+                        {item.price.toFixed(2)}
                       </p>
                     </div>
 
                     <strong>
-                      ${(item.price * item.quantity).toFixed(2)}
+                      $
+                      {(
+                        item.price *
+                        item.quantity
+                      ).toFixed(2)}
                     </strong>
+
                   </div>
+
                 ))}
+
               </div>
 
               <div className="summaryRow">
-                <span>Subtotal</span>
-                <strong>${subtotal.toFixed(2)}</strong>
+                <span>
+                  Subtotal
+                </span>
+
+                <strong>
+                  ${subtotal.toFixed(2)}
+                </strong>
               </div>
 
               <div className="summaryRow">
-                <span>Delivery</span>
-                <strong>${delivery.toFixed(2)}</strong>
+                <span>
+                  Delivery
+                </span>
+
+                <strong>
+                  ${delivery.toFixed(2)}
+                </strong>
               </div>
 
               <div className="summaryTotal">
-                <span>Total</span>
-                <strong>${total.toFixed(2)}</strong>
+                <span>
+                  Total
+                </span>
+
+                <strong>
+                  ${total.toFixed(2)}
+                </strong>
               </div>
+
             </>
+
           )}
+
         </aside>
+
       </section>
+
     </main>
   );
 }
