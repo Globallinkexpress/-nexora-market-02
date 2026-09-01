@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect } from "react";
+
 const products = [
   {
     id: "elegant-ring",
@@ -58,16 +62,44 @@ const products = [
 ];
 
 export default function Home() {
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        "nexora-products",
+        JSON.stringify(products)
+      );
+    } catch {
+      console.log("Products could not be saved.");
+    }
+  }, []);
+
   return (
     <main className="home">
       <nav className="nav">
-        <div className="logo">NEXORA</div>
+        <a href="/" className="logo">
+          NEXORA
+        </a>
 
         <div className="navLinks">
-          <a href="#marketplace">Marketplace</a>
-          <a href="#categories">Categories</a>
-          <a href="#sell">Sell</a>
-          <a href="#about">About</a>
+          <a href="#marketplace">
+            Marketplace
+          </a>
+
+          <a href="#categories">
+            Categories
+          </a>
+
+          <a href="#sell">
+            Sell
+          </a>
+
+          <a href="#about">
+            About
+          </a>
+
+          <a href="/orders">
+            My Orders
+          </a>
         </div>
 
         <a href="/login" className="login">
@@ -77,7 +109,9 @@ export default function Home() {
 
       <section className="hero">
         <div className="heroContent">
-          <p className="eyebrow">THE NEXT GLOBAL MARKETPLACE</p>
+          <p className="eyebrow">
+            THE NEXT GLOBAL MARKETPLACE
+          </p>
 
           <h1>
             Discover.
@@ -86,34 +120,53 @@ export default function Home() {
           </h1>
 
           <p className="subtitle">
-            Discover products, gifts, food, fashion and more from sellers
-            around the world.
+            Discover products, gifts, food, fashion and
+            more from sellers around the world.
           </p>
 
           <div className="actions">
-            <a href="#marketplace" className="primary">
+            <a
+              href="#marketplace"
+              className="primary"
+            >
               Explore Marketplace
             </a>
 
-            <a href="/seller" className="secondary">
+            <a
+              href="/seller"
+              className="secondary"
+            >
               Start Selling
             </a>
           </div>
         </div>
 
         <div className="globe">
-          <div className="globeInner">N</div>
+          <div className="globeInner">
+            N
+          </div>
         </div>
       </section>
 
-      <section id="marketplace" className="marketplace">
+      <section
+        id="marketplace"
+        className="marketplace"
+      >
         <div className="sectionHeader">
           <div>
-            <p className="eyebrow">MARKETPLACE</p>
-            <h2>Discover products</h2>
+            <p className="eyebrow">
+              MARKETPLACE
+            </p>
+
+            <h2>
+              Discover products
+            </h2>
           </div>
 
-          <a href="/marketplace" className="viewAll">
+          <a
+            href="/marketplace"
+            className="viewAll"
+          >
             View all →
           </a>
         </div>
@@ -126,17 +179,28 @@ export default function Home() {
               key={product.id}
             >
               <div className="productImage">
-                <span>{product.icon}</span>
+                <span>
+                  {product.icon}
+                </span>
               </div>
 
               <div className="productInfo">
-                <p className="productCategory">{product.category}</p>
+                <p className="productCategory">
+                  {product.category}
+                </p>
 
-                <h3>{product.name}</h3>
+                <h3>
+                  {product.name}
+                </h3>
 
                 <div className="productBottom">
-                  <strong>{product.price}</strong>
-                  <span className="cartButton">View product</span>
+                  <strong>
+                    {product.price}
+                  </strong>
+
+                  <span className="cartButton">
+                    View product
+                  </span>
                 </div>
               </div>
             </a>
@@ -144,57 +208,119 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="categories" className="categories">
-        <p className="eyebrow">SHOP EVERYTHING</p>
-        <h2>Explore categories</h2>
+      <section
+        id="categories"
+        className="categories"
+      >
+        <p className="eyebrow">
+          SHOP EVERYTHING
+        </p>
+
+        <h2>
+          Explore categories
+        </h2>
 
         <div className="categoryGrid">
-          <a href="/marketplace?category=Jewelry" className="card">
+          <a
+            href="/marketplace?category=Jewelry"
+            className="card"
+          >
             Jewelry
           </a>
-          <a href="/marketplace?category=Flowers" className="card">
+
+          <a
+            href="/marketplace?category=Flowers"
+            className="card"
+          >
             Flowers
           </a>
-          <a href="/marketplace?category=Birthday" className="card">
+
+          <a
+            href="/marketplace?category=Birthday"
+            className="card"
+          >
             Birthday
           </a>
-          <a href="/marketplace?category=Surprise%20Gifts" className="card">
+
+          <a
+            href="/marketplace?category=Surprise%20Gifts"
+            className="card"
+          >
             Surprise Gifts
           </a>
-          <a href="/marketplace?category=Food" className="card">
+
+          <a
+            href="/marketplace?category=Food"
+            className="card"
+          >
             Food
           </a>
-          <a href="/marketplace?category=Fashion" className="card">
+
+          <a
+            href="/marketplace?category=Fashion"
+            className="card"
+          >
             Fashion
           </a>
-          <a href="/marketplace?category=Electronics" className="card">
+
+          <a
+            href="/marketplace?category=Electronics"
+            className="card"
+          >
             Electronics
           </a>
-          <a href="/marketplace?category=Home%20%26%20Living" className="card">
+
+          <a
+            href="/marketplace?category=Home%20%26%20Living"
+            className="card"
+          >
             Home & Living
           </a>
         </div>
       </section>
 
-      <section id="sell" className="sellerSection">
+      <section
+        id="sell"
+        className="sellerSection"
+      >
         <div>
-          <p className="eyebrow">FOR ENTREPRENEURS</p>
-          <h2>Build your business on Nexora.</h2>
+          <p className="eyebrow">
+            FOR ENTREPRENEURS
+          </p>
+
+          <h2>
+            Build your business on Nexora.
+          </h2>
 
           <p>
-            Reach customers beyond borders and grow your business through a
-            global marketplace.
+            Reach customers beyond borders and grow
+            your business through a global marketplace.
           </p>
         </div>
 
-        <a href="/seller" className="primary">
+        <a
+          href="/seller"
+          className="primary"
+        >
           Become a Seller
         </a>
       </section>
 
-      <footer id="about" className="footer">
-        <div className="logo">NEXORA</div>
-        <p>Global commerce, reimagined.</p>
+      <footer
+        id="about"
+        className="footer"
+      >
+        <div className="logo">
+          NEXORA
+        </div>
+
+        <p>
+          Global commerce, reimagined.
+        </p>
+
+        <a href="/orders">
+          My Orders
+        </a>
       </footer>
     </main>
   );
