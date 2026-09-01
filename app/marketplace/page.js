@@ -69,10 +69,23 @@ const defaultProducts = [
   },
 ];
 
+const categories = [
+  "All",
+  "Jewelry",
+  "Flowers",
+  "Birthday",
+  "Surprise Gifts",
+  "Food",
+  "Fashion",
+  "Electronics",
+  "Home & Living",
+];
+
 export default function MarketplacePage() {
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] =
     useState("All");
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     try {
@@ -80,12 +93,11 @@ export default function MarketplacePage() {
         localStorage.getItem("nexora-products") || "[]"
       );
 
-      const productsToUse =
+      setProducts(
         savedProducts.length > 0
           ? savedProducts
-          : defaultProducts;
-
-      setProducts(productsToUse);
+          : defaultProducts
+      );
     } catch {
       setProducts(defaultProducts);
     }
@@ -101,25 +113,30 @@ export default function MarketplacePage() {
     }
   }, []);
 
-  const filteredProducts =
-    selectedCategory === "All"
-      ? products
-      : products.filter(
-          (product) =>
-            product.category === selectedCategory
-        );
+  const filteredProducts = products.filter(
+    (product) => {
+      const matchesCategory =
+        selectedCategory === "All" ||
+        product.category === selectedCategory;
 
-  const categories = [
-    "All",
-    "Jewelry",
-    "Flowers",
-    "Birthday",
-    "Surprise Gifts",
-    "Food",
-    "Fashion",
-    "Electronics",
-    "Home & Living",
-  ];
+      const searchText =
+        search.trim().toLowerCase();
+
+      const matchesSearch =
+        !searchText ||
+        product.name
+          .toLowerCase()
+          .includes(searchText) ||
+        product.category
+          .toLowerCase()
+          .includes(searchText);
+
+      return (
+        matchesCategory &&
+        matchesSearch
+      );
+    }
+  );
 
   return (
     <main className="home">
@@ -162,26 +179,55 @@ export default function MarketplacePage() {
         </div>
 
         <div
+          style={{
+            marginBottom: "30px",
+          }}
+        >
+          <input
+            type="search"
+            value={search}
+            onChange={(event) =>
+              setSearch(event.target.value)
+            }
+            placeholder="Search products or categories..."
+            aria-label="Search products"
+            style={{
+              width: "100%",
+              maxWidth: "700px",
+              padding: "16px 18px",
+              borderRadius: "12px",
+              border: "1px solid rgba(255,255,255,0.15)",
+              background: "rgba(255,255,255,0.05)",
+              color: "inherit",
+              fontSize: "16px",
+              outline: "none",
+            }}
+          />
+        </div>
+
+        <div
           className="categoryGrid"
           style={{
             marginBottom: "40px",
           }}
         >
-          {categories.map((category) => (
-            <a
-              key={category}
-              href={
-                category === "All"
-                  ? "/marketplace"
-                  : `/marketplace?category=${encodeURIComponent(
-                      category
-                    )}`
-              }
-              className="card"
-            >
-              {category}
-            </a>
-          ))}
+          {categories.map(
+            (category) => (
+              <a
+                key={category}
+                href={
+                  category === "All"
+                    ? "/marketplace"
+                    : `/marketplace?category=${encodeURIComponent(
+                        category
+                      )}`
+                }
+                className="card"
+              >
+                {category}
+              </a>
+            )
+          )}
         </div>
 
         {filteredProducts.length === 0 ? (
@@ -191,8 +237,8 @@ export default function MarketplacePage() {
             </h2>
 
             <p>
-              There are currently no products in
-              this category.
+              Try another product name or
+              category.
             </p>
 
             <a
