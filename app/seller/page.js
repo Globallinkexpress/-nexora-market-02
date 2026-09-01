@@ -14,6 +14,29 @@ export default function SellerPage() {
     category: "",
   });
 
+  useEffect(() => {
+    try {
+      const savedSeller = JSON.parse(
+        localStorage.getItem("nexora-seller") || "null"
+      );
+
+      if (savedSeller) {
+        setSeller({
+          name: savedSeller.name || "",
+          email: savedSeller.email || "",
+          phone: savedSeller.phone || "",
+          business: savedSeller.business || "",
+          country: savedSeller.country || "",
+          category: savedSeller.category || "",
+        });
+
+        setSubmitted(true);
+      }
+    } catch {
+      // Continue with an empty seller form.
+    }
+  }, []);
+
   function handleChange(event) {
     const { name, value } = event.target;
 
@@ -32,14 +55,10 @@ export default function SellerPage() {
       status: "Pending review",
     };
 
-    try {
-      localStorage.setItem(
-        "nexora-seller",
-        JSON.stringify(sellerProfile)
-      );
-    } catch {
-      console.log("Seller profile could not be saved.");
-    }
+    localStorage.setItem(
+      "nexora-seller",
+      JSON.stringify(sellerProfile)
+    );
 
     setSubmitted(true);
   }
@@ -53,49 +72,93 @@ export default function SellerPage() {
           </a>
 
           <div className="navLinks">
-            <a href="/">Home</a>
-            <a href="/marketplace">Marketplace</a>
-            <a href="/cart">Cart</a>
-            <a href="/orders">My Orders</a>
+            <a href="/">
+              Home
+            </a>
+
+            <a href="/marketplace">
+              Marketplace
+            </a>
+
+            <a href="/cart">
+              Cart
+            </a>
+
+            <a href="/orders">
+              My Orders
+            </a>
           </div>
         </nav>
 
         <section className="successContainer">
           <div className="successCard">
-            <div className="successIcon">✓</div>
+            <div className="successIcon">
+              ✓
+            </div>
 
             <p className="eyebrow">
-              SELLER APPLICATION
+              SELLER CENTER
             </p>
 
             <h1>
-              Application received!
+              Welcome to Nexora Seller Center
             </h1>
 
             <p>
-              Thank you for your interest in selling
-              on Nexora Market.
+              Your seller application has been
+              saved successfully.
             </p>
 
             <div className="paymentNotice">
               <h2>
-                What's next?
+                Seller status
               </h2>
 
               <p>
-                Your seller information has been
-                saved. Seller verification and
-                product management will be added
-                in the next stage.
+                Your application is currently
+                pending review.
               </p>
             </div>
 
-            <a
-              href="/"
-              className="primary"
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                flexWrap: "wrap",
+                justifyContent: "center",
+                marginTop: "25px",
+              }}
             >
-              Back Home
-            </a>
+              <a
+                href="/seller/products"
+                className="primary"
+              >
+                Manage Products
+              </a>
+
+              <a
+                href="/marketplace"
+                className="secondary"
+              >
+                View Marketplace
+              </a>
+            </div>
+
+            <div
+              style={{
+                marginTop: "20px",
+              }}
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  setSubmitted(false)
+                }
+                className="secondary"
+              >
+                Edit Seller Information
+              </button>
+            </div>
           </div>
         </section>
       </main>
@@ -110,7 +173,9 @@ export default function SellerPage() {
         </a>
 
         <div className="navLinks">
-          <a href="/">Home</a>
+          <a href="/">
+            Home
+          </a>
 
           <a href="/marketplace">
             Marketplace
@@ -137,8 +202,8 @@ export default function SellerPage() {
           </h1>
 
           <p className="checkoutSubtitle">
-            Reach customers beyond borders and grow
-            your business through the Nexora
+            Reach customers beyond borders and
+            grow your business through the Nexora
             marketplace.
           </p>
 
@@ -291,7 +356,9 @@ export default function SellerPage() {
           >
             <button
               type="button"
-              onClick={() => window.history.back()}
+              onClick={() =>
+                window.history.back()
+              }
               className="secondary"
             >
               ← Go Back
