@@ -17,7 +17,7 @@ const defaultProducts = [
     category: "Flowers",
     price: "$35",
     image:
-      "https://images.unsplash.com/photo-1487070183336-b863922373d4?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "birthday-card",
@@ -25,7 +25,7 @@ const defaultProducts = [
     category: "Birthday",
     price: "$12",
     image:
-      "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "surprise-card",
@@ -49,7 +49,7 @@ const defaultProducts = [
     category: "Fashion",
     price: "$65",
     image:
-      "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1445205170230-053b83016050?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "smart-device",
@@ -93,11 +93,29 @@ export default function MarketplacePage() {
         localStorage.getItem("nexora-products") || "[]"
       );
 
-      setProducts(
-        savedProducts.length > 0
-          ? savedProducts
-          : defaultProducts
-      );
+      if (savedProducts.length > 0) {
+        const mergedProducts = defaultProducts.map(
+          (defaultProduct) => {
+            const savedProduct =
+              savedProducts.find(
+                (item) =>
+                  item.id === defaultProduct.id
+              );
+
+            return {
+              ...defaultProduct,
+              ...savedProduct,
+              image:
+                savedProduct?.image ||
+                defaultProduct.image,
+            };
+          }
+        );
+
+        setProducts(mergedProducts);
+      } else {
+        setProducts(defaultProducts);
+      }
     } catch {
       setProducts(defaultProducts);
     }
@@ -138,6 +156,14 @@ export default function MarketplacePage() {
     }
   );
 
+  function goBack() {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      window.location.href = "/";
+    }
+  }
+
   return (
     <main className="home">
       <nav className="nav">
@@ -147,8 +173,11 @@ export default function MarketplacePage() {
 
         <div className="navLinks">
           <a href="/">Home</a>
+
           <a href="/cart">Cart</a>
+
           <a href="/orders">My Orders</a>
+
           <a href="/login">Log in</a>
         </div>
       </nav>
@@ -159,6 +188,18 @@ export default function MarketplacePage() {
           paddingTop: "120px",
         }}
       >
+        <button
+          type="button"
+          onClick={goBack}
+          className="secondary"
+          style={{
+            marginBottom: "30px",
+            cursor: "pointer",
+          }}
+        >
+          ← Go Back
+        </button>
+
         <div className="sectionHeader">
           <div>
             <p className="eyebrow">
@@ -196,8 +237,10 @@ export default function MarketplacePage() {
               maxWidth: "700px",
               padding: "16px 18px",
               borderRadius: "12px",
-              border: "1px solid rgba(255,255,255,0.15)",
-              background: "rgba(255,255,255,0.05)",
+              border:
+                "1px solid rgba(255,255,255,0.15)",
+              background:
+                "rgba(255,255,255,0.05)",
               color: "inherit",
               fontSize: "16px",
               outline: "none",
@@ -264,10 +307,7 @@ export default function MarketplacePage() {
                     }}
                   >
                     <img
-                      src={
-                        product.image ||
-                        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80"
-                      }
+                      src={product.image}
                       alt={product.name}
                       style={{
                         width: "100%",
@@ -313,12 +353,16 @@ export default function MarketplacePage() {
             marginTop: "40px",
           }}
         >
-          <a
-            href="/"
+          <button
+            type="button"
+            onClick={goBack}
             className="secondary"
+            style={{
+              cursor: "pointer",
+            }}
           >
-            ← Back Home
-          </a>
+            ← Go Back
+          </button>
         </div>
       </section>
     </main>
