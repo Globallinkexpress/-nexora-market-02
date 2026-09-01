@@ -8,56 +8,64 @@ const defaultProducts = [
     name: "Elegant Ring",
     category: "Jewelry",
     price: "$45",
-    icon: "💍",
+    image:
+      "https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "flower-bouquet",
     name: "Fresh Flower Bouquet",
     category: "Flowers",
     price: "$35",
-    icon: "🌸",
+    image:
+      "https://images.unsplash.com/photo-1487070183336-b863922373d4?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "birthday-card",
     name: "Birthday Celebration Card",
     category: "Birthday",
     price: "$12",
-    icon: "🎂",
+    image:
+      "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "surprise-card",
     name: "Surprise Gift Card",
     category: "Surprise Gifts",
     price: "$18",
-    icon: "💌",
+    image:
+      "https://images.unsplash.com/photo-1512909006721-3d6018887383?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "special-pizza",
     name: "Special Occasion Pizza",
     category: "Food",
     price: "$22",
-    icon: "🍕",
+    image:
+      "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "fashion-collection",
     name: "Classic Fashion Collection",
     category: "Fashion",
     price: "$65",
-    icon: "👗",
+    image:
+      "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "smart-device",
     name: "Wireless Smart Device",
     category: "Electronics",
     price: "$89",
-    icon: "📱",
+    image:
+      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80",
   },
   {
     id: "home-collection",
     name: "Modern Home Collection",
     category: "Home & Living",
     price: "$54",
-    icon: "🏠",
+    image:
+      "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80",
   },
 ];
 
@@ -72,11 +80,12 @@ export default function MarketplacePage() {
         localStorage.getItem("nexora-products") || "[]"
       );
 
-      setProducts(
+      const productsToUse =
         savedProducts.length > 0
           ? savedProducts
-          : defaultProducts
-      );
+          : defaultProducts;
+
+      setProducts(productsToUse);
     } catch {
       setProducts(defaultProducts);
     }
@@ -121,11 +130,8 @@ export default function MarketplacePage() {
 
         <div className="navLinks">
           <a href="/">Home</a>
-
           <a href="/cart">Cart</a>
-
           <a href="/orders">My Orders</a>
-
           <a href="/login">Log in</a>
         </div>
       </nav>
@@ -205,11 +211,25 @@ export default function MarketplacePage() {
                   className="productCard"
                   key={product.id}
                 >
-                  <div className="productImage">
-                    <span>
-                      {product.icon ||
-                        "🛍️"}
-                    </span>
+                  <div
+                    className="productImage"
+                    style={{
+                      overflow: "hidden",
+                    }}
+                  >
+                    <img
+                      src={
+                        product.image ||
+                        "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80"
+                      }
+                      alt={product.name}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    />
                   </div>
 
                   <div className="productInfo">
